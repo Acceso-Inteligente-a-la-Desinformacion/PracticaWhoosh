@@ -130,7 +130,7 @@ class App(AppWrapper):
     def searchFecha(self):
         def search(param, window):
             try:
-                self.whoosh.query('fecha', param, self.showList)
+                self.whoosh.query('fecha', '[TO '+param+'}', self.showList)
             except:
                 messagebox.showerror('Error', 'Formato de fecha incorrecto')
 

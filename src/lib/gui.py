@@ -33,9 +33,12 @@ class FormWindow:
                 c['func'] = self.nullFunctionality
 
             # Función que devuelve el parámetro introducido en el input
-            def create_func(component, entry):
+            def create_func(component, entry, returnsValue=True):
                 def func(param=None):
-                    return component['func'](entry.get(), self)
+                    if returnsValue:
+                        return component['func'](entry.get(), self)
+                    else:
+                        return component['func'](None, self)
                 return func
 
             # Generador de formulario
@@ -57,9 +60,12 @@ class FormWindow:
                 entry.bind("<Return>", create_func(c, entry))
                 entry.pack(side=LEFT)
 
-            elif c['type'] == 'entry':
-                entry = Entry(self.root)
-                entry.bind("<Return>", create_func(c, entry))
+            elif c['type'] == 'button':
+                if 'text' not in c.keys():
+                    c['text'] = "Enviar"
+            
+                entry = Button(self.root, text=c['text'])
+                entry.bind("<Button-1>", create_func(c, entry, False))
                 entry.pack(side=LEFT)
 
             self.entryComponents.append(entry)
@@ -75,9 +81,16 @@ class Component:
 
 # Elemento dentro de un menu
 class MenuTabItem:
-    def __init__(self, label, callback):
+    def __init__(self, label, callback=None):
         self.label = label
-        self.callback = callback
+
+        if callback == None:
+            self.callback = self.showConsoleMessage
+        else:
+            self.callback = callback
+
+    def showConsoleMessage(self):
+        print('Esto es un mensaje en consola')
 
 # Un nuevo apartado dentro del menu
 class MenuTab:
